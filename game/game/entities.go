@@ -5,59 +5,73 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type Entity struct {
+type GameObject struct {
 	xPos, yPos float32
 	xVel, yVel float32
-	radius     float32
-	key        ebiten.Key
 }
 
-type Ball interface {
+type Entity interface {
 	GetPos() (float32, float32)
-	GetRadius() float32
-	GetKey() ebiten.Key
 	Move(x, y float32)
 	Accelerate(dtX, dtY float32)
-	VerifyKey(k ebiten.Key) bool
 	Destroy()
 }
 
-func (self *Entity) GetPos() (float32, float32) {
+func (self *GameObject) GetPos() (float32, float32) {
 	return self.xPos, self.yPos
 }
 
-func (self *Entity) GetRadius() float32 {
-	return self.radius
-}
-
-func (self *Entity) GetKey() ebiten.Key {
-	return self.key
-}
-
-func (self *Entity) Move(x, y float32) {
+func (self *GameObject) Move(x, y float32) {
 	// TODO: add delta time
 	self.xPos += self.xVel
 	self.yPos += self.yVel
 }
 
-func (self *Entity) Accelerate(dtX, dtY float32) {
+func (self *GameObject) Accelerate(dtX, dtY float32) {
 	self.xVel += dtX
 	self.yVel += dtY
 }
 
-func (self *Entity) Destroy() {
-	fmt.Println("Destroyed :(")
-	self = nil
+func (self *GameObject) Destroy() {
+	fmt.Println("Destroyed", self)
 }
 
-func (self *Entity) VerifyKey(k ebiten.Key) bool {
+type BallActor struct {
+	GameObject
+	radius float32
+	key    ebiten.Key
+}
+
+type Ball interface {
+	GetRadius() float32
+	GetKey() ebiten.Key
+	VerifyKey(k ebiten.Key) bool
+}
+
+func (self *BallActor) GetRadius() float32 {
+	return self.radius
+}
+
+func (self *BallActor) GetKey() ebiten.Key {
+	return self.key
+}
+
+func (self *BallActor) VerifyKey(k ebiten.Key) bool {
 	return k == self.key
 }
 
-func NewBall() Ball {
-	// TODO: generate random key
-	// TODO: spawn at random position
-	// TODO: generate random radius
-	var ball Ball = &Entity{xPos: 100, yPos: 100, xVel: 0, yVel: 0, radius: 50, key: ebiten.KeyW}
-	return ball
+// TODO: generate random key
+// TODO: spawn at random position
+// TODO: generate random radius
+func NewBall() BallActor {
+	return BallActor{
+		GameObject: GameObject{
+			xPos: 100,
+			yPos: 100,
+			xVel: 0,
+			yVel: 0,
+		},
+		radius: 50,
+		key:    ebiten.KeyW,
+	}
 }

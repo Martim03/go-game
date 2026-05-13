@@ -18,7 +18,7 @@ const (
 
 type Game struct {
 	// TODO: Implement loaders (such as sprites, music, etc...)
-	balls       []game.Ball
+	balls       []game.BallActor
 	pressedKeys []ebiten.Key
 }
 
@@ -30,12 +30,13 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 * Update Logic *
 ***************/
 
-func (g *Game) killBall(i int, b game.Ball) {
+func (g *Game) killBall(i int, b game.BallActor) {
 	g.balls = append(g.balls[:i], g.balls[i+1:]...)
 	b.Destroy()
 }
 
 func (g *Game) readInput() {
+	// TODO: Should the read be buffered?
 	g.pressedKeys = inpututil.AppendPressedKeys(g.pressedKeys[:0])
 
 	// TODO: Optimize this with MAP
@@ -57,7 +58,7 @@ func (g *Game) Update() error {
 * Drawing Logic *
 ****************/
 
-func drawBall(screen *ebiten.Image, b game.Ball) {
+func drawBall(screen *ebiten.Image, b game.BallActor) {
 	// TODO: generate random color
 	lightNavyBlue := color.RGBA{45, 89, 135, 255}
 
@@ -78,7 +79,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 *************/
 
 func NewGame() *Game {
-	b := make([]game.Ball, 0)
+	b := make([]game.BallActor, 0)
 	b = append(b, game.NewBall())
 	pk := make([]ebiten.Key, 0)
 
