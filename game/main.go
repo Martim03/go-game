@@ -18,7 +18,7 @@ const (
 
 type Game struct {
 	// TODO: Implement loaders (such as sprites, music, etc...)
-	balls       []game.BallActor
+	balls       map[ebiten.Key]game.BallActor
 	pressedKeys []ebiten.Key
 }
 
@@ -30,27 +30,27 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 * Update Logic *
 ***************/
 
-func (g *Game) killBall(i int, b game.BallActor) {
-	g.balls = append(g.balls[:i], g.balls[i+1:]...)
+func (g *Game) killBall(b game.BallActor) {
 	b.Destroy()
+	delete(g.balls, b.GetKey())
 }
 
 func (g *Game) readInput() {
 	// TODO: Should the read be buffered?
 	g.pressedKeys = inpututil.AppendPressedKeys(g.pressedKeys[:0])
 
-	// TODO: Optimize this with MAP
-	for _, k := range g.pressedKeys {
-		for i, b := range g.balls {
-			if b.VerifyKey(k) {
-				g.killBall(i, b)
-			}
+	for _, key := range g.pressedKeys {
+		ball, exists := g.balls[key]
+		if exists {
+			g.killBall(ball)
 		}
+		// TODO: else take damage?
 	}
 }
 
 func (g *Game) Update() error {
 	g.readInput()
+
 	return nil
 }
 
@@ -79,12 +79,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 *************/
 
 func NewGame() *Game {
-	b := make([]game.BallActor, 0)
-	b = append(b, game.NewBall())
+	b := game.NewBall()
+	bMap := make(map[ebiten.Key]game.BallActor)
+	bMap[b.GetKey()] = b
 	pk := make([]ebiten.Key, 0)
 
 	return &Game{
-		balls:       b,
+		balls:       bMap,
 		pressedKeys: pk,
 	}
 }
