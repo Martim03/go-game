@@ -60,9 +60,6 @@ func (self *BallActor) VerifyKey(k ebiten.Key) bool {
 	return k == self.key
 }
 
-// TODO: generate random key
-// TODO: spawn at random position
-// TODO: generate random radius
 func NewBall(xPos, yPos float32, radius float32, key ebiten.Key) *BallActor {
 	return &BallActor{
 		GameObject: GameObject{

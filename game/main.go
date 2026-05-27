@@ -18,7 +18,7 @@ const (
 	screenHeight       = 450
 	windowTitle        = "Playtest"
 	spawnTimeSeconds   = 1 * time.Second
-	startingHP         = 99
+	startingHP         = 3
 	startingGamePoints = 0
 	baseDamage         = 1
 	pointsPerBall      = 100
@@ -27,6 +27,7 @@ const (
 type Game struct {
 	// TODO: Implement loaders (such as sprites, music, etc...)
 	// TODO: Extend to multiplayer
+	// ? TODO: Use linked list on the map to allow multiple balls of the same type? (handling colision)
 	balls       map[ebiten.Key]*game.BallActor
 	pressedKeys []ebiten.Key
 	player      game.Player
@@ -45,6 +46,7 @@ func isPlayerDead(player game.Player) bool {
 }
 
 func spawnBall(g *Game) {
+	// TODO: change the spawn condition
 	for {
 		time.Sleep(spawnTimeSeconds)
 		ball := game.SpawnRandomBall(screenWidth, screenHeight)
@@ -62,7 +64,6 @@ func (g *Game) killBall(b *game.BallActor) {
 }
 
 func (g *Game) readInput() {
-	// TODO: Should the read be buffered?
 	g.pressedKeys = inpututil.AppendJustPressedKeys(g.pressedKeys[:0])
 
 	for _, key := range g.pressedKeys {
@@ -108,7 +109,7 @@ func (g *Game) Update() error {
 ****************/
 
 func drawBall(screen *ebiten.Image, ball *game.BallActor) {
-	// TODO: generate random color
+	// TODO: generate color depending on player
 	lightNavyBlue := color.RGBA{45, 89, 135, 255}
 
 	x, y := ball.GetPos()

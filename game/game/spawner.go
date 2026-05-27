@@ -12,6 +12,8 @@ const (
 	MaxRadius = 50
 )
 
+// TODO: Create spawner struct
+
 func computeTrajecory(x, y, targetX, targetY float32) (float32, float32) {
 	// TODO: migrate this to physics module
 	// map to origin
