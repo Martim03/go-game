@@ -48,7 +48,11 @@ func spawnBall(g *Game) {
 	for {
 		time.Sleep(spawnTimeSeconds)
 		ball := game.SpawnRandomBall(screenWidth, screenHeight)
-		g.balls[ball.GetKey()] = ball
+		_, exists := g.balls[ball.GetKey()]
+		if !exists {
+			// Only spawn ball if the letter is unique
+			g.balls[ball.GetKey()] = ball
+		}
 	}
 }
 
