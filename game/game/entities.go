@@ -12,7 +12,7 @@ type GameObject struct {
 
 type Entity interface {
 	GetPos() (float32, float32)
-	Move(x, y float32)
+	Move()
 	Accelerate(dtX, dtY float32)
 	Destroy()
 }
@@ -21,7 +21,7 @@ func (self *GameObject) GetPos() (float32, float32) {
 	return self.xPos, self.yPos
 }
 
-func (self *GameObject) Move(x, y float32) {
+func (self *GameObject) Move() {
 	// TODO: add delta time
 	self.xPos += self.xVel
 	self.yPos += self.yVel
@@ -63,15 +63,15 @@ func (self *BallActor) VerifyKey(k ebiten.Key) bool {
 // TODO: generate random key
 // TODO: spawn at random position
 // TODO: generate random radius
-func NewBall() BallActor {
-	return BallActor{
+func NewBall(xPos, yPos float32, radius float32, key ebiten.Key) *BallActor {
+	return &BallActor{
 		GameObject: GameObject{
-			xPos: 100,
-			yPos: 100,
+			xPos: xPos,
+			yPos: yPos,
 			xVel: 0,
 			yVel: 0,
 		},
-		radius: 50,
-		key:    ebiten.KeyW,
+		radius: radius,
+		key:    key,
 	}
 }
